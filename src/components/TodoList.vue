@@ -1,3 +1,27 @@
+<script setup>
+import TodoItem from './TodoItem.vue'
+import PendienteList from './PendienteList.vue'
+import CompletadaList from './CompletadaList.vue';
+</script>
+
+
+<template>
+    <div>
+        <main>
+            
+            <PendienteList></PendienteList>
+
+            <CompletadaList></CompletadaList>
+
+            <TodoItem></TodoItem>
+
+        </main>
+    </div>
+</template>
+
+
+
+<!--
 <template>
 <div>
         <main>
@@ -93,3 +117,4 @@
             },
         };
 </script>
+-->

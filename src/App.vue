@@ -1,5 +1,5 @@
 <script setup>
-import RadioButtons from './components/RadioButtons.vue'
+import TodoList from './components/TodoList.vue'
 </script>
 
 <template>
@@ -13,7 +13,7 @@ import RadioButtons from './components/RadioButtons.vue'
 
   <main>
 
-    <RadioButtons />
+    <TodoList />
   
   </main>
 
