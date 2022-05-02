@@ -6,10 +6,10 @@
                 
             <div>
                 <ul>
-                    <li v-for="(item, index) in ListPendingItems" 
+                    <li v-for="(item, index) in ListP" 
                         :key="index">
 
-                        <item :itemC="item" :indexC="index" @removeItem="removeItem" @move="moveToComplete"></item>             
+                        <item :itemC="item" :indexC="index"></item>             
       
                     </li>
                 </ul>
@@ -24,34 +24,11 @@
 
 <script>
 import Item from './Item.vue';
+import axios from "axios";
         export default{
 
-            components: { Item },
+            props: ['ListP'],
 
-            data() {
-                return {
-                    ListPendingItems: [
-                        "Integrar Bootstrap",
-                        "Cargar horas",
-                        "hablar con Alex",
-                    ]
-                };
-            },
-            created() {
-                this.emitter.on("addli",this.addList);
-                this.emitter.on("moveToPending",this.addList);
-                this.emitter.on("removePendingItem",this.removeItem);
-            },
-            methods: {
-                addList: function (n) {
-                    this.ListPendingItems.push(n);
-                },
-                moveToComplete(item){
-                    this.emitter.emit('moveToCompletet',item);
-                },
-                removeItem: function (index) {
-                    this.ListPendingItems.splice(index,1);
-                }
-            },
+            components: { Item }
         };
 </script>

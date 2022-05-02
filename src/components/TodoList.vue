@@ -9,9 +9,9 @@ import CompletadaList from './CompletadaList.vue';
     <div>
         <main>
             
-            <PendienteList></PendienteList>
+            <PendienteList :ListP="ListPendingItems"></PendienteList>
 
-            <CompletadaList></CompletadaList>
+            <CompletadaList :ListC="ListCompleteItems"></CompletadaList>
 
             <TodoItem></TodoItem>
 
@@ -19,102 +19,70 @@ import CompletadaList from './CompletadaList.vue';
     </div>
 </template>
 
-
-
-<!--
-<template>
-<div>
-        <main>
-            
-            <h1>Tareas a realizar</h1>
-                
-            <div>
-                <ul>
-                    <li v-for="(item, index) in ListPendingItems" 
-                        :key="index">
-
-                         <button
-                            v-on:click="moveToListDoneItems(item, index)">M
-                        </button>
-                        {{ item }}
-                        <button
-                            v-on:click="removeItem(ListPendingItems, index)">X
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                            <br>
-            </div>
-
-            <h1>Tareas realizadas</h1>
-            
-            <div>
-                <ul>
-                    <li v-for="(item, index) in ListDoneItems" 
-                        :key="index">
-
-                        <button  
-                            v-on:click="moveToListPendingItems(item, index)">M
-                        </button>
-                        {{ item }}
-                        <button
-                            v-on:click="removeItem(ListDoneItems, index)">X
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                            <br><br>
-            </div>
-
-            <div class="container">
-                <input type="text" 
-                    placeholder="Agrega una nueva tarea" 
-                    v-model="newItem" 
-                    v-on:keyup.enter="addList" />
-            </div>
-        </main>
-    </div>
-  
-    
-  </template>
-
 <script>
+import axios from "axios";
         export default{
-            
+
+            components: { PendienteList, CompletadaList },
+
             data() {
                 return {
-                    ListPendingItems: [
-                        "Integrar Bootstrap",
-                        "Cargar horas",
-                        "hablar con Alex",
-                    ],
-                    ListDoneItems: [
-                        "Onboarding",
-                        "Instalar Vetur",
-                        "Leer doc de Vue",
-                    ],
-                    newItem: "",
+                    List:[],
+                    CL:[]
                 };
             },
+            
+            async created() {
+                this.emitter.on("removeItem",this.removeItem);
+                this.emitter.on("moveItem",this.moveItem);
+                this.emitter.on("addToList",this.addToList);
+                const res = await axios.get("https://localhost:44376/api/MainTaskAdmin/GetItems");
+
+                for(let elem of res.data)
+                {
+                    this.List.push(new Array(elem.id, elem.description, elem.active));
+                }
+            },
+            computed:{
+                    ListPendingItems(){
+                            return this.List.filter(e=>e[2]==true);
+                        },
+                    
+                    ListCompleteItems(){
+                            return this.List.filter(e=>e[2]==false);
+                        }
+                    
+            },
             methods: {
-                addList: function () {
-                    this.ListPendingItems.push(this.newItem);
-                    this.newItem = "";
+                addToList: async function (Item) {
+
+                    const res = await axios.post("https://localhost:44376/api/MainTaskAdmin/SaveNewItem",
+                                  {"description": Item[0]});
+
+                    this.List.push(new Array(res.data.id, res.data.description, res.data.active));
                 },
-                moveToListDoneItems: function (item, index) {
-                    this.ListDoneItems.push(item);
-                    this.ListPendingItems.splice(index, 1);
+                moveItem(Item){
+                    axios.put("https://localhost:44376/api/MainTaskAdmin/UpdateItem",
+                                  {"id": Item[0],
+                                        "description": Item[1],
+                                        "active": Item[2]});
+                    if(Item[2]==false)
+                    {Item[2]=true}
+                    else
+                    {Item[2]=false}
+
+                    const index = this.List.findIndex(e=>e[0]==Item[0])
+                    this.List[index] = Item;
+                    
                 },
-                moveToListPendingItems: function (item, index) {
-                    this.ListPendingItems.push(item);
-                    this.ListDoneItems.splice(index, 1);                
-                },
-                removeItem: function (List, index) {
-                    List.splice(index,1);
+                removeItem: function (Item) {
+                    axios.delete("https://localhost:44376/api/MainTaskAdmin/DeleteItem",
+                                 {data : {"id": Item[0],
+                                        "description": Item[1],
+                                        "active": Item[2]}});
+                    const index = this.List.findIndex(e=>e[0]==Item[0])
+                    this.List.splice(index,1);
                 }
             },
         };
 </script>
--->

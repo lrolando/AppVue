@@ -1,13 +1,13 @@
 
 <template>
-    <!--this.emitter.emit('moveToComplete',iteml);-->
         <button
-            v-on:click="this.$emit('move',itemC);
-                        this.$emit('removeItem',indexC);">M
+            v-on:click="//this.$emit('move',itemC);
+                        this.emitter.emit('moveItem',itemC)">M
         </button>
-                        {{ itemC }}
+                        {{ itemC[1] }}
         <button
-            v-on:click="this.$emit('removeItem',indexC);">X
+            v-on:click="//this.$emit('removeItem',itemC);
+                        this.emitter.emit('removeItem',itemC)">X
         </button>
 
 

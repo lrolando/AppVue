@@ -6,10 +6,10 @@
             
             <div>
                 <ul>
-                    <li v-for="(item, index) in ListDoneItems" 
+                    <li v-for="(item, index) in ListC" 
                         :key="index">
 
-                        <item :itemC="item" :indexC="index" @removeItem="removeItem" @move="moveToPending"></item>  
+                        <item :itemC="item" :indexC="index"></item>  
 
                     </li>
                 </ul>
@@ -25,35 +25,14 @@
 
 <script>
 import Item from './Item.vue';
+import axios from "axios";
 
         export default{
 
-            components: { Item },
+            props: ['ListC'],
+            
+            components: { Item }
 
-            data() {
-                return {
-                    ListDoneItems: [
-                        "Onboarding",
-                        "Instalar Vetur",
-                        "Leer doc de Vue",
-                    ]
-                };
-            },
-            created() {
-                this.emitter.on("moveToCompletet",this.addList);
-
-            },
-            methods: {
-                addList: function (n) {
-                    this.ListDoneItems.push(n);
-                   
-                },
-                moveToPending: function(item) {
-                    this.emitter.emit('moveToPending', item);
-                },
-                removeItem: function (index) {
-                    this.ListDoneItems.splice(index,1);
-                }
-            }
+            
         };
 </script>
